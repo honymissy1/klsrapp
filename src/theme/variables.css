@@ -1,0 +1,21 @@
+
+
+:root {
+  background-image: url('/images/background.jpg');
+  /* --ion-text-color: rgb(203, 203, 199); */
+}
+  
+
+ion-tab-bar {
+     box-shadow: .5px .5px 8px rgba(0, 0, 0, 0.377);
+    --background: #002F3D; /* Background color */
+    --color: #ffffff; /* Text color */
+    --color-selected: rgb(73, 130, 216); /* Text color for the selected tab */
+    --indicator-color: #cccccc; /* Indicator color for the selected tab */
+    /* max-width: 500px; */
+}
+
+
+ion-card{
+  --background: white;
+}
