@@ -78,18 +78,21 @@ const Home: React.FC = () => {
         <Swiper 
           onSlideChange={changeStation}
           style={{width: '100%', height: '100%',
-                  backgroundImage: "url('/images/background.jpg')",
-                  backgroundPosition: 'bottom',
+                  background: 'teal',
+                   backgroundImage: "url('/images/background.jpg')",
+                  backgroundPosition: 'top',
                   backgroundSize: 'cover'
                  }} className="mySwiper">
           <SwiperSlide className='flex flex-col justify-evenly items-center' style={{width: '100vw', height: '100%'}}>
-            <div className=''>
-              <h1 className='text-center text-2xl p-3 font-bold channel text-[white]'>English Channel</h1>
-              <div className='w-[150px] md:w-[300px] m-auto'>
-                <img className='w-full' src="/images/logo.png" alt="" />
-              </div>
+          <div>
+              <h1 className='text-center text-2xl p-3 channel font-bold text-[white]'>English Channel</h1>
+              <div className='p-3 rounded-4xl overflow-hidden'>
+                 <img className="rounded-2xl" src="/images/Thumbnail.png" alt="" />
 
-              <div className='w-max m-auto mt-20'>
+               </div>
+
+
+              <div className='w-max m-auto mt-10'>
                 {
                   playing ? (<button onClick={playEnglish}><i className="text-6xl text-teal-800 fa-solid fa-circle-pause"></i></button>
                   ):(<button onClick={playEnglish}><i className="text-6xl text-teal-800 fa-solid fa-circle-play"></i></button>
@@ -99,18 +102,20 @@ const Home: React.FC = () => {
 
             </div>
 
-            <div className='mt-10 text-xs flex items-center rounded-lg justify-between bg-[white] p-2 w-[50%]'><h1 className='flex-1 text-center font-extrabold'>Swipe left to switch</h1>  <img className='w-[15px]' src="/images/right.gif" alt="" /> </div>
+            <div className='mt-10 text-xs flex items-center rounded-lg justify-between bg-[white] p-2 w-[50%]'><h1 className='flex-1 text-center font-extrabold dark:text-black'>Swipe left to switch</h1><img className='w-[15px]' src="/images/right.gif" alt="" /></div>
 
-           
+
           </SwiperSlide>
           <SwiperSlide className='flex flex-col justify-evenly items-center' style={{width: '100vw', height: '100%'}}>
           <div>
               <h1 className='text-center text-2xl p-3 channel font-bold text-[white]'>Yoruba Channel</h1>
-              <div className='w-[150px] md:w-[300px] m-auto'>
-                <img className='w-full' src="/images/logo.png" alt="" />
-              </div>
+              <div className='p-3 rounded-4xl overflow-hidden'>
+                 <img className="rounded-2xl" src="/images/Thumbnail2.png" alt="" />
 
-              <div className='w-max m-auto mt-20'>
+               </div>
+
+
+              <div className='w-max m-auto mt-10'>
                 {
                   playing ? (<button onClick={playEnglish}><i className="text-6xl text-teal-800 fa-solid fa-circle-pause"></i></button>
                   ):(<button onClick={playEnglish}><i className="text-6xl text-teal-800 fa-solid fa-circle-play"></i></button>
@@ -120,7 +125,7 @@ const Home: React.FC = () => {
 
             </div>
 
-            <div className='mt-10 text-xs flex items-center rounded-lg justify-between bg-[white] p-2 w-[50%]'> <img className='w-[15px]' src="/images/left.gif" alt="" /> <h1 className='flex-1 text-center font-extrabold'>Swipe right to switch</h1></div>
+            <div className='mt-10 text-xs flex items-center rounded-lg justify-between bg-[white] p-2 w-[50%]'> <img className='w-[15px]' src="/images/left.gif" alt="" /> <h1 className='flex-1 text-center font-extrabold dark:text-black'>Swipe right to switch</h1></div>
 
 
           </SwiperSlide>

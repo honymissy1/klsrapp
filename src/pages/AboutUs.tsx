@@ -78,9 +78,9 @@ const AboutUs = () =>{
 
               <div className='mt-5 rounded bg-[teal] w-full overflow-hidden relative h-[400px]'>
                 <img src="/images/founder.png" alt="" />
-                <div className='absolute bottom-0 bg-[white] w-full p-2'>
-                  <h1 className='text-2xl font-extrabold'>Olalekan Oloyede</h1>
-                  <p className='italic'>Founder, Kingdom Lifestyle Radio</p>
+                <div className='absolute text-black bottom-0 bg-[white] w-full p-2'>
+                  <h1 className='text-2xl font-extrabold dark:text-black'>Olalekan Oloyede</h1>
+                  <p className='italic dark:text-black'>Founder, Kingdom Lifestyle Radio</p>
                 </div>
               </div>
             </div>

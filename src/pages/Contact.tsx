@@ -30,10 +30,6 @@ const Contact = () =>{
       <IonContent>
       <div className='top-0 px-2 bg-fixed min-h-[100vh] pt-5' style={{backgroundSize: 'cover', backgroundImage: "url('/images/background.jpg')", backgroundRepeat: 'no-repeat'}}>
 
-          <h1 className='p-2 text-center text-white font-bold text-md'>To contact us you can reach out to <span className='text-[#0b2929]'>Kingdom Lifestyle Radio </span>
-              on any of our phone lines or social media handle
-          </h1>
-
           <div className="flex-1 mt-10 p-5 min-w-[300px] min-h-[300px] text-[white] bg-[#00808082] rounded-md">
                     <h1 className='font-extrabold text-2xl py-5'>Mobile Number</h1>
 

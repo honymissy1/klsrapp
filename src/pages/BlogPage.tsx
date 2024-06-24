@@ -66,20 +66,18 @@ const BlogPage: React.FC = () => {
                   <div className='m-auto w-[200px] h-[200px]'>
                   <img src="/images/connect.gif" alt="" />
                   </div>
-                  <h1 className='font-extrabold text-2xl'>Can't get article from database</h1>
-                  <p>Make sure your internet connection is secure to accesss articles</p>
+                  <h1 className='font-extrabold text-2xl dark:text-black'>Can't get article from database</h1>
+                  <p className='dark:text-black'>Make sure your internet connection is secure to accesss articles</p>
 
                  </div>
                 </div>
               )
             }
           <div className='relative top-0 bg-[white]'>       
-            <div className='p-1 min-h-[50%] bg-[#002F3D] pb-[40px]' style={{borderRadius: '0px 0px 70px 0px'}}>
                 {
                     articles && !loading && (
+            <div className={`p-1 min-h-[50%] bg-[#002F3D] pb-[40px]`} style={{borderRadius: '0px 0px 70px 0px'}}>
                       <div className='text-xs m-2 bg-[#C89700] w-max text-white p-1 rounded font-bold'>Latest</div>
-                    )
-                  }
 
                 <Swiper slidesPerView={1.5} slidesPerGroup={1}>
                   {
@@ -102,6 +100,8 @@ const BlogPage: React.FC = () => {
 
               </Swiper> 
             </div>
+                    )
+                  }
 
           <br />
 
@@ -109,8 +109,8 @@ const BlogPage: React.FC = () => {
               {
                 articles && !loading && articles?.slice(2).map((ele:any, index:any) =>(
                   <Link to={`/article/${ele.id}`}>
-                    <IonItem className=''>
-                        <div className='m-2 w-full'>
+                    <IonItem className='dark:bg-white'>
+                        <div className='m-2 w-full dark:text-[#222020]'>
                           <p className="text-xs py-2 text-green-700 font-semibold">{ele.type}</p>
                           <h1 className='text-[#2d2a2a]'>{ele.title}</h1>
                         

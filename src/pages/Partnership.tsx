@@ -37,7 +37,7 @@ const Partnership = () =>{
               <h1 className='text-center text-white text-2xl font-extrabold'>Partner / Support Kingdom Lifestyle Radio</h1>
             {/* </IonCardHeader> */}
 
-            <p className='p-2 text-center text-[#ffffff]'>You support Kingdom Lifestyle Radio by sowing you seeds to the account details below</p>
+            <p className='p-2 text-center text-[#ffffff]'>You can support KLSCharities by transferring into the account details below</p>
           {/* </IonCard> */}
 
           <div className='p-4 max-w-[600px] md:m-auto'>

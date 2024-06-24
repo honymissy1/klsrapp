@@ -7,8 +7,8 @@
   
 
 ion-tab-bar {
-     box-shadow: .5px .5px 8px rgba(0, 0, 0, 0.377);
-    --background: #002F3D; /* Background color */
+     box-shadow: .5px .5px 8px rgba(46, 44, 173, 0.67);
+    --background: #111550; /* Background color */
     --color: #ffffff; /* Text color */
     --color-selected: rgb(73, 130, 216); /* Text color for the selected tab */
     --indicator-color: #cccccc; /* Indicator color for the selected tab */

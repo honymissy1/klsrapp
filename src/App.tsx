@@ -46,6 +46,7 @@ import Programs from './pages/Programs';
 import AboutUs from './pages/AboutUs';
 import Partnership from './pages/Partnership'
 import Contact from './pages/Contact';
+import Podcast from './pages/Podcast';
 
 setupIonicReact();
 
@@ -73,6 +74,7 @@ const App: React.FC = () => {
 
           <Route path="/articles" render={() => <BlogPage />} exact={true} />
           <Route path="/more" render={() => <More />} exact={true} />
+          <Route path="/podcast" render={() => <Podcast />} exact={true} />
 
 
           <Route path="/about" render={() => <AboutUs />} exact={true} />
@@ -84,12 +86,12 @@ const App: React.FC = () => {
 
         <IonTabBar style={{borderRadius: '0px', padding:'10px 5px', width: '100%', margin: '0px auto'}} slot="bottom">
         
-          <IonTabButton tab="articles" href="/articles"  onClick={() => setSelectedTab('article')}>
+          <IonTabButton tab="podcast" href="/podcast"  onClick={() => setSelectedTab('podcast')}>
             {/* <IonIcon icon={newspaper} /> */}
             <div className='w-[30px]'>
-             <img className={selectedTab === 'article' ? 'selected' : ''} src={Article} alt="" />
+             <img className={selectedTab === 'podcast' ? 'selected w-full' : ''} src='/images/podcast.png' alt="" />
             </div>
-            <IonLabel>Articles</IonLabel>
+            <IonLabel>Podcast</IonLabel>
 
           </IonTabButton>
 
@@ -103,7 +105,7 @@ const App: React.FC = () => {
 
           <IonTabButton tab="more" href="/more"  onClick={() => setSelectedTab('more')}>
           <div className='w-[30px]'>
-             <img className={selectedTab === 'more' ? 'selected w-full' : ''} src={Article} alt="" />
+             <img className={selectedTab === 'more' ? 'selected' : ''} src="/favicon.png" alt="" />
             </div>
 
             <IonLabel>More</IonLabel>
