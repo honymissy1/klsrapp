@@ -1,4 +1,4 @@
-import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/react';
+import { IonContent,   IonRefresher, IonRefresherContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/react';
 import React, { useState, useEffect, useRef } from 'react';
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
@@ -13,6 +13,18 @@ const Home: React.FC = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [playing, setPlaying] = useState<any>(true);
 
+  const doRefresh = async (event:any) => {
+    try {
+      // Perform your data fetching here
+      window.location.reload();
+      // If successful
+      event.detail.complete();
+    } catch (error) {
+      // Handle the error here
+      event.detail.complete();
+    }
+  };
+  
 
   useEffect(() => {
     if (currentSlide === 0) {
@@ -65,6 +77,15 @@ const Home: React.FC = () => {
             </IonTitle>
           </IonToolbar>
         </IonHeader>
+        <IonRefresher slot="fixed" onIonRefresh={doRefresh}>
+          <IonRefresherContent
+           className='custom-refresher-text !text-white'
+            pullingIcon="chevron-down-circle-outline"
+            pullingText="Pull to refresh"
+            refreshingSpinner="circles"
+            refreshingText="Refreshing..."
+          />
+        </IonRefresher>
  
           <audio style={{display: 'none'}} ref={audioRef1}  id="english" controls>
             <source src={audioclips[0]} type="audio/mpeg" />
@@ -94,8 +115,8 @@ const Home: React.FC = () => {
 
               <div className='w-max m-auto mt-10'>
                 {
-                  playing ? (<button onClick={playEnglish}><i className="text-6xl text-teal-800 fa-solid fa-circle-pause"></i></button>
-                  ):(<button onClick={playEnglish}><i className="text-6xl text-teal-800 fa-solid fa-circle-play"></i></button>
+                  playing ? (<button onClick={playEnglish}><i className="text-6xl text-teal-500 fa-solid fa-circle-pause"></i></button>
+                  ):(<button onClick={playEnglish}><i className="text-6xl text-teal-500 fa-solid fa-circle-play"></i></button>
                   )
                 }
               </div>
@@ -117,8 +138,8 @@ const Home: React.FC = () => {
 
               <div className='w-max m-auto mt-10'>
                 {
-                  playing ? (<button onClick={playEnglish}><i className="text-6xl text-teal-800 fa-solid fa-circle-pause"></i></button>
-                  ):(<button onClick={playEnglish}><i className="text-6xl text-teal-800 fa-solid fa-circle-play"></i></button>
+                  playing ? (<button onClick={playEnglish}><i className="text-6xl text-teal-500 fa-solid fa-circle-pause"></i></button>
+                  ):(<button onClick={playEnglish}><i className="text-6xl text-teal-500 fa-solid fa-circle-play"></i></button>
                   )
                 }
               </div>

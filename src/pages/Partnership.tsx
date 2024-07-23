@@ -34,11 +34,30 @@ const Partnership = () =>{
          <div className='top-0 bg-fixed min-h-[100vh] pt-5' style={{ backgroundSize: 'cover', backgroundImage: "url('/images/background.jpg')", backgroundRepeat: 'no-repeat'}}>
           {/* <IonCard className=''>
             <IonCardHeader>  */}
-              <h1 className='text-center text-white text-2xl font-extrabold'>Partner / Support Kingdom Lifestyle Radio</h1>
+              <h1 className='text-center text-white text-2xl font-extrabold'> KINGDOM LIFESTYLE & DIAMOND CHARITIES</h1>
             {/* </IonCardHeader> */}
 
-            <p className='p-2 text-center text-[#ffffff]'>You can support KLSCharities by transferring into the account details below</p>
+            <p className='p-2 text-center text-[#ffffff]'>Kingdom Lifestyle and Diamond Charities is a non-profit and non-political organization - part of Kingdom Lifestyle Radio with the mandate to:</p>
           {/* </IonCard> */}
+
+          <IonCard className='relative'>
+            <div className='text-xl font-extrabold bg-blue-900 text-white w-max p-2'>
+              1
+            </div>
+            <p className='p-3'>SPREAD GOD'S LOVE TO THE VULNERABLE, THE NEEDY, THE HOMELESS,
+              STRUGGLING YOUTHS AND ADULTS ACROSS AFRICAN COUNTRIES BY ASSISTING AND
+              EMPOWERING THEM ECONOMICALLY</p>
+           </IonCard>
+
+           <IonCard className='mt-5'>
+           <div className='text-xl font-extrabold bg-blue-900 text-white w-max p-2'>
+              2
+            </div>
+             <p className='p-3'>
+                RENDER SUPPORT AND ASSISTANCE TO THE LESS PRIVILEGED IN THE SOCIETY.
+
+             </p>
+           </IonCard>
 
           <div className='p-4 max-w-[600px] md:m-auto'>
            <img src="/images/charity.jpg" alt="" />

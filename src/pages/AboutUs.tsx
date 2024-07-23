@@ -36,7 +36,7 @@ const AboutUs = () =>{
                   committed to the transmission of God’s word, powerful spirit 
                   and soul lifting messages from various ministers of the
                     gospel, worship songs, and hymns. We do not compromise 
-                  template through the Scripture is our priority for all age 
+                  template template as the Scripture remains our priority for all age 
                   brackets.
 <br /><br />
                   More so, among so many tools available in the toolbox of a Christian, faith, is an essential tool that helps a person to connect with God. We found this to be true in the book of <span className='font-extrabold text-white'>Hebrews 11:6</span>

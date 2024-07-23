@@ -10,12 +10,20 @@ import {
   IonNavLink,
   IonToolbar,
   IonTitle,
+  IonRefresher,
+  IonRefresherContent,
+  IonToast
 } from '@ionic/react';
+
+
+import { RefresherEventDetail } from '@ionic/core';
 
 const Podcast = () =>{
 
+  const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
 
-   const audioRef = useRef<any>(null);
+  const audioRef = useRef<any>(null);
   const [podcastData, setPodcastData] = useState<any>();
   let [currentPodcast, setCurrentPodcast] = useState(0);
   let [currentTime, setCurrentTime] = useState('00:00:00');
@@ -32,6 +40,20 @@ const Podcast = () =>{
   const formattedSecs = secs.toString().padStart(2, '0');
 
   return `${formattedHrs}:${formattedMins}:${formattedSecs}`;
+};
+
+const doRefresh = async (event: CustomEvent<RefresherEventDetail>) => {
+  try {
+    // Perform your data fetching here
+    window.location.reload();
+    // If successful
+    event.detail.complete();
+  } catch (error) {
+    // Handle the error here
+    setToastMessage('Network error. Please try again.');
+    setShowToast(true);
+    event.detail.complete();
+  }
 };
 
     useEffect(() =>{
@@ -107,6 +129,15 @@ const Podcast = () =>{
         </IonToolbar>
       </IonHeader>
       <IonContent>
+      <IonRefresher slot="fixed" onIonRefresh={doRefresh}>
+          <IonRefresherContent
+           className='custom-refresher-text !text-white'
+            pullingIcon="chevron-down-circle-outline"
+            pullingText="Pull to refresh"
+            refreshingSpinner="circles"
+            refreshingText="Refreshing..."
+          />
+        </IonRefresher>
 
             <div className="min-h-[60vh]">
 
@@ -200,7 +231,7 @@ const Podcast = () =>{
                             {podcastData?.map((item:any, index:any) => (
                               <div onClick={() => scrollToTop(index)} className={`p-2 mb-5 items-center border-l-4 rounded border border-black  ${currentPodcast === index ? 'bg-gray-300' : ''}`} key={index}>
                                 <h2 className="p-2 font-extrabold">{item.children.find((child:any) => child.name === 'title').value.slice(0, -1)}</h2>
-                                <p className="p-2 font-bold text-xs">{item.children.find((child:any) => child?.name == 'pubDate')?.value.slice(0, -1)}</p>
+                                <p className="p-2 font-bold text-xs">{item.children.find((child:any) => child?.name == 'pubDate')?.value}</p>
 
                               </div>
                             ))}
@@ -216,7 +247,11 @@ const Podcast = () =>{
                    <ul className="list-disc  text-left w-max m-auto">
                     <li>Network Connectivity issue</li>
                     <li>Internal Server error</li>
+
+      
                    </ul>
+
+                   <p className='text-center'>Pull to refresh</p>
                  </div>
               )
               }
@@ -229,6 +264,12 @@ const Podcast = () =>{
 
 
       </IonContent>
+      <IonToast
+        isOpen={showToast}
+        message={toastMessage}
+        duration={2000}
+        onDidDismiss={() => setShowToast(false)}
+      />
         </IonPage>
     )
 }

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Share } from '@capacitor/share';
-
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.bubble.css'; 
 import {
   IonPage,
   IonBackButton,
@@ -14,54 +15,36 @@ import {
 } from '@ionic/react';
 
 import supabase from '../../superbaseClient';
+import { useEditor, EditorContent } from '@tiptap/react'
+import StarterKit from '@tiptap/starter-kit'
 
 import { useParams } from 'react-router';
 
-import { Editor, convertFromRaw, EditorState } from 'draft-js';
-
-
-const convertJSONToContentState = (rawData:any):any => {
-  return convertFromRaw(rawData);
-};
-
-const RichTextEditor = (props:any):any => {
-  const [editorState, setEditorState] = useState(EditorState.createEmpty());
-
-  useEffect(() => {
-    if (props.rawData) {
-      const contentState = convertJSONToContentState(props.rawData);
-      setEditorState(EditorState.createWithContent(contentState));
-    }
-  }, [props.rawData]);
-
-  return (
-    <div style={{padding: '10px', borderRadius: '4px' }}>
-      <Editor onChange={() => console.log('Changed')} editorState={editorState} readOnly={true} />
-    </div>
-  );
-};
 
 
 
+const extensions = [StarterKit]
 
 const Article = () =>{
   const params = useParams<any>();
   const [data, setData] = useState<any>();
-  const [loading, setLoading] = useState<any>();
+  const [loading, setLoading] = useState<any>(false);
   const [content, setContent] = useState<any>();
   const [comments, setComments] = useState();
   const [commentText, setCommentText] = useState(); 
 
+
   useEffect(() =>{
+    setLoading(true)
     const dataFetch = async() =>{      
 
       let { data:result, error } = await supabase
       .from('articles')
       .select()
       .eq("id", params.id)  
-       
       setContent(result);
-      setData(JSON.parse(result[0].content));  
+      setLoading(false)
+      // setData(JSON.parse(result[0].content));  
 
     }
 
@@ -78,6 +61,30 @@ const Article = () =>{
 
   }
 
+  let editor = useEditor({
+    extensions: [
+      StarterKit,
+      // TextAlign.configure({
+      //   types: ['heading', 'paragraph'],
+      // }),
+
+      // Blockquote.configure({
+      //   HTMLAttributes: {
+      //     class: 'bg-green-100 p-2',
+      //   },
+      // })
+      
+    ],
+    content: content ? content[0]?.content : 'Not working',
+    editable: false,
+  })
+
+  useEffect(() => {
+    if (editor && content) {
+        editor.commands.setContent(content[0]?.content);
+    }
+   }, [content, editor]);
+
     return(
         <IonPage>
               <IonHeader>
@@ -89,15 +96,35 @@ const Article = () =>{
         </IonToolbar>
       </IonHeader>
       <IonContent>
-            {/* <h1>Article Dash....</h1> */}
+           {
+            loading && (
+              <div className='h-[80vh] flex  text-center p-3'>
+                <div className="w-[30%] m-auto max-w-[500px]">
+                  <img className='w-full' src="/images/loader.gif" alt="" />
+                  
+                </div>
+              </div>
+            )
+          }
             {
               content?.map((ele:any) => (
                 <div className='p-3'>
-                  <h1 className='text-2xl text-center font-bold'>{ele.title}</h1>
+                  <h1 className='text-xl text-center font-bold'>{ele.title}</h1>
                     <img className='m-auto' src={ele.img_url} alt="" />
-                   <RichTextEditor rawData={data} />
+                    {/* <ReactQuill
+                      value={ele.content}
+                      readOnly={true}
+                      theme={"bubble"}
+                    /> */}
+                    <br />
 
-                   <button className='bg-green-400 p-2 rounded font-extrabold' onClick={handleShare}>Share Article <i className="fa-regular fa-paper-plane"></i></button>
+                    <div className='mb-10'>
+                      <EditorContent editor={editor} />
+                    </div>
+
+
+
+                   <button className='bg-green-400 p-2 m-auto rounded font-extrabold' onClick={handleShare}>Share Article <i className="fa-regular fa-paper-plane"></i></button>
                 </div>
               ))
            

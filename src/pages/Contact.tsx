@@ -33,7 +33,7 @@ const Contact = () =>{
           <div className="flex-1 mt-10 p-5 min-w-[300px] min-h-[300px] text-[white] bg-[#00808082] rounded-md">
                     <h1 className='font-extrabold text-2xl py-5'>Mobile Number</h1>
 
-                    <p>For prayers, counseling or support you can contact us through this numbers</p>
+                    <p>For prayers, counseling or support you can contact us via</p>
 
                     <div className='p-2 mt-5 bg-white text-black relative'>
                         <sup className='rounded-md bg-green-600 p-2 text-white font-extrabold absolute right-0'>Nigeria</sup>

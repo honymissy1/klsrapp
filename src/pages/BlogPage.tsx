@@ -1,5 +1,6 @@
-import { IonContent, IonHeader, IonCard, IonCardContent, IonCardHeader,
-   IonPage, IonTitle, IonToolbar, IonNavLink, IonList, IonItem } from '@ionic/react';
+import { IonContent, IonHeader, IonCard, IonButtons, IonBackButton, IonCardHeader,
+   IonPage, IonTitle, IonToolbar,   IonRefresher,
+   IonRefresherContent, IonNavLink, IonList, IonItem } from '@ionic/react';
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import { useEffect, useState } from "react";
@@ -8,31 +9,73 @@ import { formatRelative, subDays } from "date-fns";
 import Article from './Post';
 import { Link } from 'react-router-dom';
 
+
+
 const BlogPage: React.FC = () => {
 
   const [articles, setArticles] = useState<any>();
   const [loading, setLoading] = useState<any>();
+  const [data, setData] = useState([]);
+  const [page, setPage] = useState(1);
+  const [pageSize] = useState(10); // Number of items per page
+  const [totalPages, setTotalPages] = useState(1);
 
   useEffect(() =>{
     setLoading(true)
-    const fetcher = async() =>{
-      let { data: articles, error } = await supabase
-      .from('articles')
-      .select()
 
-      setArticles(articles)
-      console.log(articles);
+    const start = (page - 1) * pageSize;
+    const end = start + pageSize - 1;
+
+    const fetcher = async() =>{
+      let { data: articles, error, count} = await supabase
+      .from('articles')
+      .select('*', { count: 'exact' }).order('created_at', { ascending: false }).range(start, end);
+
+      if(articles){
+        setArticles(articles)
+        setTotalPages(Math.ceil(parseInt(count) / pageSize));
+      }
       setLoading(false)
     }
 
     fetcher()
 
     
-  },[])
+  },[page, pageSize])
+
+
+  const handleNextPage = () => {
+    if (page < totalPages) {
+        setPage(page + 1);
+    }
+};
+
+const handlePreviousPage = () => {
+    if (page > 1) {
+        setPage(page - 1);
+    }
+};
+
+
+  const doRefresh = async (event:any) => {
+    try {
+      // Perform your data fetching here
+      window.location.reload();
+      // If successful
+      event.detail.complete();
+    } catch (error) {
+      // Handle the error here
+      event.detail.complete();
+    }
+  };
+  
   return (
     <IonPage>
       <IonHeader>
         <IonToolbar>
+          <IonButtons slot="start">
+            <IonBackButton></IonBackButton>
+          </IonButtons>
           <IonTitle>Articles</IonTitle>
         </IonToolbar>
       </IonHeader>
@@ -47,13 +90,22 @@ const BlogPage: React.FC = () => {
             </IonTitle>
           </IonToolbar>
         </IonHeader>
+        <IonRefresher slot="fixed" onIonRefresh={doRefresh}>
+          <IonRefresherContent
+           className='custom-refresher-text !text-white'
+            pullingIcon="chevron-down-circle-outline"
+            pullingText="Pull to refresh"
+            refreshingSpinner="circles"
+            refreshingText="Refreshing..."
+          />
+        </IonRefresher>
         <div className="bg-white w-full min-h-[100%]">
           {
             loading && (
               <div className='h-[80vh] flex  text-center p-3'>
                 <div className="w-[30%] m-auto max-w-[500px]">
                   <img className='w-full' src="/images/loader.gif" alt="" />
-                  <h1 className='text-2xl'>Loading</h1>
+                  
                 </div>
               </div>
             )
@@ -81,7 +133,7 @@ const BlogPage: React.FC = () => {
 
                 <Swiper slidesPerView={1.5} slidesPerGroup={1}>
                   {
-                    articles && articles?.slice(0,3).map((ele:any, index:any) =>(
+                    articles && articles?.slice(0,4).map((ele:any, index:any) =>(
                       <SwiperSlide key={index} className='flex flex-col justify-evenly items-center' style={{width: '100vw', height: '100%'}}>
                       <Link to={`/article/${ele.id}`}>
                         <IonCard routerLink={`article/${ele.id}`} className='relative text-black'>
@@ -109,17 +161,18 @@ const BlogPage: React.FC = () => {
               {
                 articles && !loading && articles?.slice(2).map((ele:any, index:any) =>(
                   <Link to={`/article/${ele.id}`}>
-                    <IonItem className='dark:bg-white'>
-                        <div className='m-2 w-full dark:text-[#222020]'>
+                    <IonItem>
+                        <div className='m-2 w-full dark:text-[white]'>
                           <p className="text-xs py-2 text-green-700 font-semibold">{ele.type}</p>
-                          <h1 className='text-[#2d2a2a]'>{ele.title}</h1>
+                          <h1 className='text-[#2d2a2a] text-sm dark:text-white'>{ele.title}</h1>
                         
                           <div className='flex text-xs font-bold justify-between items-center'>
-                            <p className='text-xs py-2'>by {ele.creator}</p>
-                            <p className='text-green-400'><i className="fa-regular fa-calendar-days"></i> {formatRelative(subDays(ele.created_at, 0), new Date())}</p>
+                            <p className='text-xs truncate py-2 dark:text-white'>by {ele.creator}</p>
+                            <p className='text-green-400 text-xs'><i className="fa-regular fa-calendar-days"></i> {formatRelative(subDays(ele.created_at, 0), new Date())}</p>
 
                           </div>
                         </div>
+
 
                       </IonItem>
                   </Link>
@@ -131,6 +184,14 @@ const BlogPage: React.FC = () => {
           </div>
 
         </div>
+            <div className='p-10 flex justify-between items-center'>
+                <button className={`${page === 1 ? 'bg-purple-100 text-white':"bg-blue-700"} p-2  rounded-md`} onClick={handlePreviousPage} disabled={page === 1}>
+                    <i className='fa fa-arrow-left'></i>  </button>
+                <span>{page} of {totalPages} </span>
+                <button className={`${page === totalPages ? 'bg-purple-100 text-white':"bg-blue-700"} p-2  rounded-md`} onClick={handleNextPage}>
+                      <i className='fa fa-arrow-right'></i>
+                </button>
+            </div>
 
       </IonContent>
     </IonPage>

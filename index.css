@@ -20,3 +20,19 @@ body{
         font-style: normal;
       
 }
+
+.more-text{
+    font-family: ubuntu;
+    color: rgb(218, 221, 221);
+    line-height: 15px;
+    text-shadow: .3px .4px 4px black;
+    
+}
+.more-header{
+    font-family: roboto;
+    /* letter-spacing: 15px; */
+}
+
+.custom-refresher-text {
+    color: white; 
+}
