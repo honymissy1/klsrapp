@@ -244,7 +244,7 @@ const doRefresh = async (event: CustomEvent<RefresherEventDetail>) => {
               ): (
                  <div className="min-w-[300px] rounded-md text-center bg-teal-900 text-white h-max py-10 flex-1">
                    <h1 className="font-extrabold text-2xl">Could not get podcasts</h1>
-                   <p className="text-red-100 text-xs mt-4 bg-red-800 w-max m-auto p-1 rounded-full">This could be due to</p>
+                   <p className="text-red-100 text-xs mt-4 bg-red-800 w-max m-auto p-1 rounded-full">This could be due to:</p>
      
                    <ul className="list-disc  text-left w-max m-auto">
                     <li>Network Connectivity issue</li>
