@@ -48,7 +48,7 @@ const More: React.FC = () => {
                          <img style={{width: '100%'}} src={article} alt="" />
                       </div>
                     </IonCardHeader>
-                    <IonCardContent style={{textAlign: 'center'}}>Articles</IonCardContent>
+                    <IonCardContent style={{textAlign: 'center', color:'black'}}>Articles</IonCardContent>
                   </IonCard>
                 </Link>
               </IonCol>
@@ -62,7 +62,7 @@ const More: React.FC = () => {
                           <img style={{width: '100%'}} src="/images/program.png" alt="" />
                       </div>
                     </IonCardHeader>
-                    <IonCardContent style={{textAlign: 'center'}}>Programs</IonCardContent>
+                    <IonCardContent style={{textAlign: 'center', color:'black'}}>Programs</IonCardContent>
                   </IonCard>
                 </Link>
               </IonCol>
@@ -80,7 +80,7 @@ const More: React.FC = () => {
                           <img style={{width: '100%'}} src="/images/partnership.png" alt="" />
                       </div>
                     </IonCardHeader>
-                    <IonCardContent style={{textAlign: 'center'}}>Kingdom Lifestyle & Diamond Charities</IonCardContent>
+                    <IonCardContent style={{textAlign: 'center', color:'black'}}>Kingdom Lifestyle & Diamond Charities</IonCardContent>
                   </IonCard>
                 </Link>
               </IonCol>
@@ -97,7 +97,7 @@ const More: React.FC = () => {
                         <img style={{width: '100%'}} src="/images/about.gif" alt="" />
                     </div>
                   </IonCardHeader>
-                  <IonCardContent style={{textAlign: 'center'}}>About Us</IonCardContent>
+                  <IonCardContent style={{textAlign: 'center', color:'black'}}>About Us</IonCardContent>
                 </IonCard>
             </Link>
               </IonCol>
@@ -110,7 +110,7 @@ const More: React.FC = () => {
                           <img style={{width: '100%'}} src="/images/contact.png" alt="" />
                       </div>
                     </IonCardHeader>
-                    <IonCardContent style={{textAlign: 'center'}}>Contact Us</IonCardContent>
+                    <IonCardContent style={{textAlign: 'center', color:'black'}}>Contact Us</IonCardContent>
                   </IonCard>
                 </Link>
               </IonCol>
@@ -126,7 +126,7 @@ const More: React.FC = () => {
                       </div>
                      <h1 className="text-center font-bold">Kingdom Lifestyle Radio website</h1> 
                     </IonCardHeader>
-                    <IonCardContent style={{textAlign: 'center'}}>
+                    <IonCardContent style={{textAlign: 'center', color:'black'}}>
                       <p>For more edifying and life transforming contents visit our website now via <span className='text-green-500'>www.kingdomlifestyleradio</span></p>
                     </IonCardContent>
                   </IonCard>
