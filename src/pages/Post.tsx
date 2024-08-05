@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Share } from '@capacitor/share';
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.bubble.css'; 
+// import 'react-quill/dist/quill.bubble.css'; 
 import {
   IonPage,
   IonBackButton,

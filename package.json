@@ -1,7 +1,7 @@
 {
   "name": "klsr-app",
   "private": true,
-  "version": "0.0.1",
+  "version": "2",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -34,7 +34,8 @@
     "ionicons": "^7.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-quill": "^2.0.0",
+    "react-h5-audio-player": "^3.9.3",
+    "react-quill": "^0.0.2",
     "react-router": "^5.3.4",
     "react-router-dom": "^5.3.4",
     "react-xml-parser": "^1.1.8",

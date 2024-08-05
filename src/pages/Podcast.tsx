@@ -1,5 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import  XMLParser from 'react-xml-parser';
+import AudioPlayer from 'react-h5-audio-player';
+import 'react-h5-audio-player/lib/styles.css';
 import {
   IonPage,
   IonBackButton,
@@ -24,11 +26,13 @@ const Podcast = () =>{
   const [toastMessage, setToastMessage] = useState('');
 
   const audioRef = useRef<any>(null);
-  const [podcastData, setPodcastData] = useState<any>();
   let [currentPodcast, setCurrentPodcast] = useState(0);
   let [currentTime, setCurrentTime] = useState('00:00:00');
   const [play, setPlay] = useState(false);
   const [podNum, setPodnum] = useState(0);
+
+  const [audioSrc, setAudioSrc] = useState('');
+  const [podcastData, setPodcastData] = useState([]);
 
   const formatTime = (seconds:any) => {
   const hrs = Math.floor(seconds / 3600);
@@ -56,20 +60,34 @@ const doRefresh = async (event: CustomEvent<RefresherEventDetail>) => {
   }
 };
 
-    useEffect(() =>{
-      const fetchPod = async () =>{
-        fetch(`https://anchor.fm/s/1d6ad87c/podcast/rss`)
-        .then(response => response.text())
-        .then(str => {          
-            audioRef.current.pause();
-            const xml = new XMLParser().parseFromString(str);
-            setPodcastData(xml.getElementsByTagName('item'))
-            // console.log(xml.getElementsByTagName('item'));
-           })       
-          }
-          
-          fetchPod()
-        },[])
+useEffect(() => {
+  const fetchPod = async () => {
+    try {
+      const response = await fetch('https://anchor.fm/s/1d6ad87c/podcast/rss');
+      const text = await response.text();
+      const xml = new XMLParser().parseFromString(text);
+      setPodcastData(xml.getElementsByTagName('item'));
+    } catch (error) {
+      console.error('Error fetching podcast data:', error);
+    }
+  };
+
+  fetchPod();
+}, []);
+
+useEffect(() => {
+  if (audioRef.current) {
+    audioRef.current.load();
+    audioRef.current.play();
+  }
+}, [audioSrc]);
+
+const handleAudioChange = (newSrc:any) => {
+  if (audioRef.current) {
+    audioRef.current.pause();
+  }
+  setAudioSrc(newSrc);
+};
 
             const timer = () =>{
       const audioElement = audioRef.current;
@@ -111,11 +129,6 @@ const doRefresh = async (event: CustomEvent<RefresherEventDetail>) => {
       }
     };
 
-    const scrollToTop = (index:any) => {
-      setCurrentPodcast(index)
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    };
-  
 
 
     return(
@@ -177,7 +190,13 @@ const doRefresh = async (event: CustomEvent<RefresherEventDetail>) => {
                                 </div>
 
                                 </div>
-                                <a href={podcastData && podcastData[currentPodcast].children.find((child:any) => child.name === 'enclosure').attributes.url} download={podcastData && podcastData[currentPodcast].children.find((child:any) => child.name === 'title').value+'.mp3'} type="audio/mpeg">
+
+                                <AudioPlayer
+                                    src={item?.getElementsByTagName('enclosure')[0].attributes.url}
+                                    onPlay={e => console.log("onPlay")}
+                                    // other props here
+                                  />
+                                <a href={IonItem.getElementsByTagName('enclosure').attributes.url} download={podcastData && podcastData[currentPodcast].children.find((child:any) => child.name === 'title').value+'.mp3'} type="audio/mpeg">
 
                                 <div className="p-1 text-center rounded bg-green-600">
                                   <h1 className="text-white font-bold"><i className="fa-solid fa-download mr-5"></i> Download podcast</h1>
@@ -229,7 +248,7 @@ const doRefresh = async (event: CustomEvent<RefresherEventDetail>) => {
 
                           <div>
                             {podcastData?.map((item:any, index:any) => (
-                              <div onClick={() => scrollToTop(index)} className={`p-2 mb-5 items-center border-l-4 rounded border border-black  ${currentPodcast === index ? 'bg-gray-300' : ''}`} key={index}>
+                              <div onClick={() => handleAudioChange(item.getElementsByTagName('enclosure')[0].attributes.url)} className={`p-2 mb-5 items-center border-l-4 rounded border border-black  ${currentPodcast === index ? 'bg-gray-300' : ''}`} key={index}>
                                 <h2 className="p-2 font-extrabold">{item.children.find((child:any) => child.name === 'title').value.slice(0, -1)}</h2>
                                 <p className="p-2 font-bold text-xs">{item.children.find((child:any) => child?.name == 'pubDate')?.value}</p>
 
