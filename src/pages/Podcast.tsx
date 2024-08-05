@@ -2,6 +2,9 @@ import React, { useEffect, useRef, useState } from 'react';
 import  XMLParser from 'react-xml-parser';
 import AudioPlayer from 'react-h5-audio-player';
 import 'react-h5-audio-player/lib/styles.css';
+import AudioPlayer from 'react-h5-audio-player';
+import 'react-h5-audio-player/lib/styles.css';
+
 import {
   IonPage,
   IonBackButton,
@@ -60,34 +63,20 @@ const doRefresh = async (event: CustomEvent<RefresherEventDetail>) => {
   }
 };
 
-useEffect(() => {
-  const fetchPod = async () => {
-    try {
-      const response = await fetch('https://anchor.fm/s/1d6ad87c/podcast/rss');
-      const text = await response.text();
-      const xml = new XMLParser().parseFromString(text);
-      setPodcastData(xml.getElementsByTagName('item'));
-    } catch (error) {
-      console.error('Error fetching podcast data:', error);
-    }
-  };
+    useEffect(() =>{
+      const fetchPod = async () =>{
+        fetch(`https://anchor.fm/s/1d6ad87c/podcast/rss`)
+        .then(response => response.text())
+        .then(str => {          
+            const xml = new XMLParser().parseFromString(str);
+            setPodcastData(xml.getElementsByTagName('item'))
+           })       
+          }
+          
+          fetchPod();
 
-  fetchPod();
-}, []);
-
-useEffect(() => {
-  if (audioRef.current) {
-    audioRef.current.load();
-    audioRef.current.play();
-  }
-}, [audioSrc]);
-
-const handleAudioChange = (newSrc:any) => {
-  if (audioRef.current) {
-    audioRef.current.pause();
-  }
-  setAudioSrc(newSrc);
-};
+          audioRef.current.pause();
+        },[])
 
             const timer = () =>{
       const audioElement = audioRef.current;
@@ -129,6 +118,20 @@ const handleAudioChange = (newSrc:any) => {
       }
     };
 
+    const scrollToTop = (index:any) => {
+      setCurrentPodcast(index)
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+  
+    const clickNext = () =>{
+      setCurrentPodcast(currentPodcast+1)
+    }
+
+    const clickPrev = () =>{
+      if(currentPodcast > 0){
+        setCurrentPodcast(currentPodcast-1)   
+      }
+    }
 
 
     return(
@@ -170,47 +173,27 @@ const handleAudioChange = (newSrc:any) => {
                             <div className="flex-1 min-w-[300px]">
                               <div className="" id="player">
                               <div className="shadow p-3 !mx-auto shadow-slate-300 min-w-[300px]  w-[80%] rounded" id="description">
-                                <div className="p-5 text-center">
+                                <div className="text-center">
                                 <img className="w-full" src="/images/designs/img3.jpeg" alt="" />
-                                <div className="py-5 flex items-center font-bold gap-2">
-                                  <h1>{currentTime}</h1>
-                                  <h1 className="w-full h-[10px] rounded bg-green-500"></h1>
-                                   <h1>{podcastData && podcastData[currentPodcast].children.find((child:any) => child.name === 'itunes:duration').value}</h1>
-                                </div>
-
-                                <div className="flex w-1/2 m-auto justify-center">
-                                  {/* <i  onClick={handleBackward} className="fa-solid fa-backward"></i> */}
-                                  {
-                                    play ? (  <i onClick={handlePause} className="fa-solid fa-pause"></i>):
-                                    (<i onClick={handlePlay} className="fa-solid fa-play"></i>)
-                                  }
-                                
-                                  {/* <i onClick={handleFoward} className="fa-solid fa-forward"></i> */}
-
-                                </div>
 
                                 </div>
 
                                 <AudioPlayer
-                                    src={item?.getElementsByTagName('enclosure')[0].attributes.url}
+                                    autoPlay={false}
+                                    onClickPrevious={() => clickPrev()}
+                                    autoPlayAfterSrcChange
+                                    onClickNext={() => clickNext()}
+                                    src={podcastData && podcastData[currentPodcast]?.children.find((child:any) => child.name === 'enclosure').attributes.url}
                                     onPlay={e => console.log("onPlay")}
-                                    // other props here
-                                  />
-                                <a href={IonItem.getElementsByTagName('enclosure').attributes.url} download={podcastData && podcastData[currentPodcast].children.find((child:any) => child.name === 'title').value+'.mp3'} type="audio/mpeg">
+                                />
+
+                                <a href={podcastData && podcastData[currentPodcast].children.find((child:any) => child.name === 'enclosure').attributes.url} download={podcastData && podcastData[currentPodcast].children.find((child:any) => child.name === 'title').value+'.mp3'} type="audio/mpeg">
 
                                 <div className="p-1 text-center rounded bg-green-600">
                                   <h1 className="text-white font-bold"><i className="fa-solid fa-download mr-5"></i> Download podcast</h1>
                                 </div>
                                 </a>
                                 
-                                <audio ref={audioRef} className="absolute" key={podcastData && podcastData[currentPodcast].children.find((child:any) => child.name === 'enclosure').attributes.url}>
-                                  {
-                                    podcastData !== "undefined" && (
-                                      <source src={podcastData && podcastData[currentPodcast]?.children.find((child:any) => child.name === 'enclosure').attributes.url} type="audio/mpeg" />
-                                    )
-                                  }
-                                  Your browser does not support the audio element.
-                                </audio>
 
                               </div>
                               </div>
@@ -220,8 +203,8 @@ const handleAudioChange = (newSrc:any) => {
                                   <div className="shadow !mx-auto my-4 shadow-slate-300 min-w-[300px] w-[80%] rounded" id="description">
                                     <div className="p-5">
                                       <h1 className="font-extrabold py-2 text-2xl">
-                                      {podcastData && podcastData[currentPodcast].children.find((child:any) => child.name === 'title').value.slice(0, -1)}</h1>
-                                      <p className="text-sm">{podcastData && podcastData[currentPodcast].children.find((child:any) => child.name === 'description').value.slice(0, -1)}</p>
+                                      {podcastData && podcastData[currentPodcast]?.children.find((child:any) => child.name === 'title').value.slice(0, -1)}</h1>
+                                      <p className="text-sm">{podcastData && podcastData[currentPodcast]?.children.find((child:any) => child.name === 'description').value.slice(0, -1)}</p>
                                       <hr />
                                       <div className="flex flex-wrap justify-between items-center pt-2">
                                           <h1 className="text-[#985be3] font-extrabold py-1"><i className="fa-solid fa-user-tie"></i> Olalekan Oloyede</h1>
