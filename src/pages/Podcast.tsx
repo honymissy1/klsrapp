@@ -64,14 +64,14 @@ const doRefresh = async (event: CustomEvent<RefresherEventDetail>) => {
         fetch(`https://anchor.fm/s/1d6ad87c/podcast/rss`)
         .then(response => response.text())
         .then(str => {          
-            audioRef.current.pause();
             const xml = new XMLParser().parseFromString(str);
             setPodcastData(xml.getElementsByTagName('item'))
-            // console.log(xml.getElementsByTagName('item'));
            })       
           }
           
-          fetchPod()
+          fetchPod();
+
+          audioRef.current.pause();
         },[])
 
             const timer = () =>{
@@ -119,6 +119,15 @@ const doRefresh = async (event: CustomEvent<RefresherEventDetail>) => {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     };
   
+    const clickNext = () =>{
+      setCurrentPodcast(currentPodcast+1)
+    }
+
+    const clickPrev = () =>{
+      if(currentPodcast > 0){
+        setCurrentPodcast(currentPodcast-1)   
+      }
+    }
 
 
     return(
@@ -166,6 +175,10 @@ const doRefresh = async (event: CustomEvent<RefresherEventDetail>) => {
                                 </div>
 
                                 <AudioPlayer
+                                    autoPlay={false}
+                                    onClickPrevious={() => clickPrev()}
+                                    autoPlayAfterSrcChange
+                                    onClickNext={() => clickNext()}
                                     src={podcastData && podcastData[currentPodcast]?.children.find((child:any) => child.name === 'enclosure').attributes.url}
                                     onPlay={e => console.log("onPlay")}
                                 />
