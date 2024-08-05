@@ -1,5 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import  XMLParser from 'react-xml-parser';
+import AudioPlayer from 'react-h5-audio-player';
+import 'react-h5-audio-player/lib/styles.css';
+
 import {
   IonPage,
   IonBackButton,
@@ -157,26 +160,16 @@ const doRefresh = async (event: CustomEvent<RefresherEventDetail>) => {
                             <div className="flex-1 min-w-[300px]">
                               <div className="" id="player">
                               <div className="shadow p-3 !mx-auto shadow-slate-300 min-w-[300px]  w-[80%] rounded" id="description">
-                                <div className="p-5 text-center">
+                                <div className="text-center">
                                 <img className="w-full" src="/images/designs/img3.jpeg" alt="" />
-                                <div className="py-5 flex items-center font-bold gap-2">
-                                  <h1>{currentTime}</h1>
-                                  <h1 className="w-full h-[10px] rounded bg-green-500"></h1>
-                                   <h1>{podcastData && podcastData[currentPodcast].children.find((child:any) => child.name === 'itunes:duration').value}</h1>
-                                </div>
-
-                                <div className="flex w-1/2 m-auto justify-center">
-                                  {/* <i  onClick={handleBackward} className="fa-solid fa-backward"></i> */}
-                                  {
-                                    play ? (  <i onClick={handlePause} className="fa-solid fa-pause"></i>):
-                                    (<i onClick={handlePlay} className="fa-solid fa-play"></i>)
-                                  }
-                                
-                                  {/* <i onClick={handleFoward} className="fa-solid fa-forward"></i> */}
 
                                 </div>
 
-                                </div>
+                                <AudioPlayer
+                                    src={podcastData && podcastData[currentPodcast]?.children.find((child:any) => child.name === 'enclosure').attributes.url}
+                                    onPlay={e => console.log("onPlay")}
+                                />
+
                                 <a href={podcastData && podcastData[currentPodcast].children.find((child:any) => child.name === 'enclosure').attributes.url} download={podcastData && podcastData[currentPodcast].children.find((child:any) => child.name === 'title').value+'.mp3'} type="audio/mpeg">
 
                                 <div className="p-1 text-center rounded bg-green-600">

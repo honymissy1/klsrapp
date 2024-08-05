@@ -143,9 +143,6 @@ const Programs = () =>{
           <img className='' src="/images/designs/img6.jpg" alt="Burger" />
           </SwiperSlide>
         
-          <SwiperSlide className='!w-[300px] md:!w-[600px]  self-center'>
-          <img className='' src="/images/designs/img7.jpg" alt="Burger" />
-          </SwiperSlide>
         </Swiper>
           </div>
           {
