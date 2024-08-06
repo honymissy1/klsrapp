@@ -2,8 +2,6 @@ import React, { useEffect, useRef, useState } from 'react';
 import  XMLParser from 'react-xml-parser';
 import AudioPlayer from 'react-h5-audio-player';
 import 'react-h5-audio-player/lib/styles.css';
-import AudioPlayer from 'react-h5-audio-player';
-import 'react-h5-audio-player/lib/styles.css';
 
 import {
   IonPage,
@@ -29,13 +27,11 @@ const Podcast = () =>{
   const [toastMessage, setToastMessage] = useState('');
 
   const audioRef = useRef<any>(null);
+  const [podcastData, setPodcastData] = useState<any>();
   let [currentPodcast, setCurrentPodcast] = useState(0);
   let [currentTime, setCurrentTime] = useState('00:00:00');
   const [play, setPlay] = useState(false);
   const [podNum, setPodnum] = useState(0);
-
-  const [audioSrc, setAudioSrc] = useState('');
-  const [podcastData, setPodcastData] = useState([]);
 
   const formatTime = (seconds:any) => {
   const hrs = Math.floor(seconds / 3600);
@@ -194,6 +190,14 @@ const doRefresh = async (event: CustomEvent<RefresherEventDetail>) => {
                                 </div>
                                 </a>
                                 
+                                <audio ref={audioRef} className="absolute" key={podcastData && podcastData[currentPodcast].children.find((child:any) => child.name === 'enclosure').attributes.url}>
+                                  {
+                                    podcastData !== "undefined" && (
+                                      <source src={podcastData && podcastData[currentPodcast]?.children.find((child:any) => child.name === 'enclosure').attributes.url} type="audio/mpeg" />
+                                    )
+                                  }
+                                  Your browser does not support the audio element.
+                                </audio>
 
                               </div>
                               </div>
@@ -203,8 +207,8 @@ const doRefresh = async (event: CustomEvent<RefresherEventDetail>) => {
                                   <div className="shadow !mx-auto my-4 shadow-slate-300 min-w-[300px] w-[80%] rounded" id="description">
                                     <div className="p-5">
                                       <h1 className="font-extrabold py-2 text-2xl">
-                                      {podcastData && podcastData[currentPodcast]?.children.find((child:any) => child.name === 'title').value.slice(0, -1)}</h1>
-                                      <p className="text-sm">{podcastData && podcastData[currentPodcast]?.children.find((child:any) => child.name === 'description').value.slice(0, -1)}</p>
+                                      {podcastData && podcastData[currentPodcast].children.find((child:any) => child.name === 'title').value.slice(0, -1)}</h1>
+                                      <p className="text-sm">{podcastData && podcastData[currentPodcast].children.find((child:any) => child.name === 'description').value.slice(0, -1)}</p>
                                       <hr />
                                       <div className="flex flex-wrap justify-between items-center pt-2">
                                           <h1 className="text-[#985be3] font-extrabold py-1"><i className="fa-solid fa-user-tie"></i> Olalekan Oloyede</h1>
@@ -231,7 +235,7 @@ const doRefresh = async (event: CustomEvent<RefresherEventDetail>) => {
 
                           <div>
                             {podcastData?.map((item:any, index:any) => (
-                              <div onClick={() => handleAudioChange(item.getElementsByTagName('enclosure')[0].attributes.url)} className={`p-2 mb-5 items-center border-l-4 rounded border border-black  ${currentPodcast === index ? 'bg-gray-300' : ''}`} key={index}>
+                              <div onClick={() => scrollToTop(index)} className={`p-2 mb-5 items-center border-l-4 rounded border border-black  ${currentPodcast === index ? 'bg-gray-300' : ''}`} key={index}>
                                 <h2 className="p-2 font-extrabold">{item.children.find((child:any) => child.name === 'title').value.slice(0, -1)}</h2>
                                 <p className="p-2 font-bold text-xs">{item.children.find((child:any) => child?.name == 'pubDate')?.value}</p>
 
