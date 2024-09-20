@@ -21,6 +21,11 @@ import {
 
 import { RefresherEventDetail } from '@ionic/core';
 
+function stripHtmlTags(str:any) {
+  return str.replace(/<\/?[^>]+(>|$)/g, " ");
+}
+
+
 const Podcast = () =>{
 
   const [showToast, setShowToast] = useState(false);
@@ -29,21 +34,6 @@ const Podcast = () =>{
   const audioRef = useRef<any>(null);
   const [podcastData, setPodcastData] = useState<any>();
   let [currentPodcast, setCurrentPodcast] = useState(0);
-  let [currentTime, setCurrentTime] = useState('00:00:00');
-  const [play, setPlay] = useState(false);
-  const [podNum, setPodnum] = useState(0);
-
-  const formatTime = (seconds:any) => {
-  const hrs = Math.floor(seconds / 3600);
-  const mins = Math.floor((seconds % 3600) / 60);
-  const secs = Math.floor(seconds % 60);
-
-  const formattedHrs = hrs.toString().padStart(2, '0');
-  const formattedMins = mins.toString().padStart(2, '0');
-  const formattedSecs = secs.toString().padStart(2, '0');
-
-  return `${formattedHrs}:${formattedMins}:${formattedSecs}`;
-};
 
 const doRefresh = async (event: CustomEvent<RefresherEventDetail>) => {
   try {
@@ -70,49 +60,7 @@ const doRefresh = async (event: CustomEvent<RefresherEventDetail>) => {
           }
           
           fetchPod();
-
-          audioRef.current.pause();
         },[])
-
-            const timer = () =>{
-      const audioElement = audioRef.current;
-  
-      const updateCurrentTime = () => {
-        const currentSeconds = audioElement.currentTime;
-        setCurrentTime(formatTime(currentSeconds));
-      };
-  
-      if (audioElement) {
-        audioElement?.addEventListener('timeupdate', updateCurrentTime);
-      }
-  
-      return () => {
-        if (audioElement) {
-          setCurrentTime(audioRef?.current.currentTime.toFixed())
-        }
-      };
-
-    }
-
-
-    timer()
-    useEffect(() => {
-    }, []);
-
-    const handlePlay = () => {
-      if (audioRef.current) {
-        audioRef?.current?.play();
-        setPlay(true)
-      }
-    };
-  
-    // Pause the audio
-    const handlePause = () => {
-      if (audioRef.current) {
-        audioRef.current.pause();
-        setPlay(false)
-      }
-    };
 
     const scrollToTop = (index:any) => {
       setCurrentPodcast(index)
@@ -162,42 +110,38 @@ const doRefresh = async (event: CustomEvent<RefresherEventDetail>) => {
                 </div>
               </div>
 
-              <div className="min-h-[300px] p-5 md:p-10 flex-wrap gap-10 flex">
+              <div className="min-h-[300px] md:p-10 flex-wrap gap-10 flex">
  
                            {
                 
-                            <div className="flex-1 min-w-[300px]">
+                            <div className="flex-1 w-full  md:min-w-[500px]">
                               <div className="" id="player">
-                              <div className="shadow p-3 !mx-auto shadow-slate-300 min-w-[300px]  w-[80%] rounded" id="description">
+                              <div className="shadow md:p-3 !mx-auto shadow-slate-300 min-w-[300px] w-[80%] rounded" id="description">
                                 <div className="text-center">
                                 <img className="w-full" src="/images/designs/img3.jpeg" alt="" />
 
                                 </div>
 
                                 <AudioPlayer
+                                    onClickPrevious={clickPrev}
+                                    onClickNext={clickNext}
                                     autoPlay={false}
-                                    onClickPrevious={() => clickPrev()}
-                                    autoPlayAfterSrcChange
-                                    onClickNext={() => clickNext()}
+                                    showDownloadProgress
+                                    showSkipControls={false}
+                                    autoPlayAfterSrcChange={false}
                                     src={podcastData && podcastData[currentPodcast]?.children.find((child:any) => child.name === 'enclosure').attributes.url}
-                                    onPlay={e => console.log("onPlay")}
-                                />
+                                    onError={() => alert('Error playing podcast')}
+                                    style={{ 
+                                                                                fontSize: "100px"
+                                    }}
+                             />
 
                                 <a href={podcastData && podcastData[currentPodcast].children.find((child:any) => child.name === 'enclosure').attributes.url} download={podcastData && podcastData[currentPodcast].children.find((child:any) => child.name === 'title').value+'.mp3'} type="audio/mpeg">
 
-                                <div className="p-1 text-center rounded bg-green-600">
+                                <div className="p-3 text-center rounded bg-green-600">
                                   <h1 className="text-white font-bold"><i className="fa-solid fa-download mr-5"></i> Download podcast</h1>
                                 </div>
                                 </a>
-                                
-                                <audio ref={audioRef} className="absolute" key={podcastData && podcastData[currentPodcast].children.find((child:any) => child.name === 'enclosure').attributes.url}>
-                                  {
-                                    podcastData !== "undefined" && (
-                                      <source src={podcastData && podcastData[currentPodcast]?.children.find((child:any) => child.name === 'enclosure').attributes.url} type="audio/mpeg" />
-                                    )
-                                  }
-                                  Your browser does not support the audio element.
-                                </audio>
 
                               </div>
                               </div>
@@ -208,7 +152,7 @@ const doRefresh = async (event: CustomEvent<RefresherEventDetail>) => {
                                     <div className="p-5">
                                       <h1 className="font-extrabold py-2 text-2xl">
                                       {podcastData && podcastData[currentPodcast].children.find((child:any) => child.name === 'title').value.slice(0, -1)}</h1>
-                                      <p className="text-sm">{podcastData && podcastData[currentPodcast].children.find((child:any) => child.name === 'description').value.slice(0, -1)}</p>
+                                      <p className="text-sm">{podcastData && stripHtmlTags(podcastData[currentPodcast].children.find((child:any) => child.name === 'description').value.slice(0, -1))}</p>
                                       <hr />
                                       <div className="flex flex-wrap justify-between items-center pt-2">
                                           <h1 className="text-[#985be3] font-extrabold py-1"><i className="fa-solid fa-user-tie"></i> Olalekan Oloyede</h1>

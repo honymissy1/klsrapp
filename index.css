@@ -36,3 +36,42 @@ body{
 .custom-refresher-text {
     color: white; 
 }
+
+.rhap_container .rhap_main-controls-button {
+    width: 50px !important;
+    height: 50px !important;
+    font-size: 50px;
+  }
+  
+  .rhap_container .rhap_play-pause-button {  
+    font-size: 40px !important;
+    width: 40px !important;
+    height: 40px !important;
+  }
+
+  .rhap_button-clear .rhap_repeat-button{
+    font-size: 50px !important;
+    width: 50px !important;
+    height: 50px !important;
+    border: 2px solid !important;
+  }
+
+  .rhap_additional-controls{
+    font-size: 50px !important;
+    width: 50px !important;
+    height: 50px !important;
+  }
+
+  .rhap_container .rhap_repeat-button{
+    font-size: 50px !important;
+    width: 50px !important;
+    height: 50px !important; 
+    display: none !important; 
+ }
+
+
+  .rhap_container .rhap_volume-button{
+    font-size: 50px !important;
+    width: 50px !important;
+    height: 50px !important; 
+ }

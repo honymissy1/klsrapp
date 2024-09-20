@@ -37,15 +37,15 @@ const Contact = () =>{
 
                     <div className='p-2 mt-5 bg-white text-black relative'>
                         <sup className='rounded-md bg-green-600 p-2 text-white font-extrabold absolute right-0'>Nigeria</sup>
-                        <p className='font-extrabold text-sm'>
+                        <p className='font-extrabold text-lg'>
                         <a href={`tel: +2349160006614`}> +2349160006614, </a>
-                        <a href={`tel: +2347067873032`}>  +2347067873032, </a>
+                        <a className='my-3' href={`tel: +2347067873032`}>  +2347067873032, </a>
                         <a href={`tel: +2347018036538`}> +2347018036538 </a>
                         </p>
                     </div>
                     <div className='p-2 my-5 bg-white text-black relative'>
                         <sup className='rounded-md bg-red-600 p-2 text-white font-extrabold absolute right-0'>USA</sup>
-                        <p className='font-extrabold text-sm'>+1347-481-6604 OR +1347-208-4052</p>
+                        <p className='font-extrabold text-lg'>+1347-481-6604 OR +1347-208-4052</p>
                     </div>
 
                     <div>
@@ -85,13 +85,15 @@ const Contact = () =>{
             <IonRow>
               <IonCol>
                 <IonCard className='p-2 m-1'>
-                    <div className="h-[150px] border">
+                    {/* <div className="h-[150px] border">
                     <iframe className='w-full' src="https://www.youtube.com/embed/PDWWz-wbunQ" title="Kingdom Lifestyle Podcast" allowFullScreen></iframe>
-                    </div>
+                    </div> */}
+
+                      <i className="fa-brands fa-youtube text-red-600 text-[40px]"></i>
                     <div className='w-full flex pt-3 justify-between items-center'>
                       <p>Youtube</p>
                       <a href={'https://www.youtube.com/@kingdomLifestyle-radio'}>
-                        <p className='bg-red-600 text-white p-1 rounded-full text-xs'>More </p>
+                        <p className='text-white rounded text-md font-extrabold p-2 bg-green-800'>More {">>"}</p>
                       </a>  
                     </div>
                   </IonCard>
