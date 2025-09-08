@@ -6,7 +6,7 @@ import "swiper/css";
 
 const Home: React.FC = () => {
 
-  const audioclips:any = ['https://s3.voscast.com:9425/stream', 'https://s3.voscast.com:10745/stream']
+  const audioclips:any = ['https://stream.zeno.fm/dqzzz8hwgh9vv', 'https://stream.zeno.fm/fqipu4so1qatv']
   const audioRef1 = useRef<any>(null);
   const audioRef2 = useRef<any>(null);
 

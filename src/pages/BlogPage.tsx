@@ -6,7 +6,6 @@ import "swiper/css";
 import { useEffect, useState,useRef } from "react";
 import supabase from '../../superbaseClient';
 import { formatRelative, subDays } from "date-fns";
-import Article from './Post';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 
@@ -79,7 +78,7 @@ const BlogPage: React.FC = () => {
                 );
                 post.featured_image_url = mediaResponse.data.source_url;
               } else {
-                post.featured_image_url = null;
+                post.featured_image_url = '';
               }
               return post;
             })
@@ -193,19 +192,19 @@ const handlePreviousPage = () => {
                   {
                     articles && articles?.slice(0,4).map((ele:any, index:any) =>(
                       <SwiperSlide key={index} className='flex flex-col justify-evenly items-center' style={{width: '100vw', height: '100%'}}>
-                      <Link to={`/article/${ele.id}`}>
-                        <IonCard routerLink={`article/${ele.id}`} className='relative text-black'>
+                      <a href={`https://kingdomlifestyleadmin.com.ng/${ele.id}`}>
+                        <IonCard className='relative text-black'>
                               {/* <p className='absolute m-1 p-1 text-xs text-white font-bold bg-[#baa31ef6] w-max rounded'>{ele.type}</p> */}
                               <div className='w-full flex overflow-hidden h-[100px]'>
                                 <img className='w-full object-cover object-top' src={ele.featured_image_url} alt="images" />
                               </div>
-                              <h1 className='!text-sm px-2 my-3 min-h-[50px] max-h-[100px] line-clamp-3  !font-bold'>
+                              <h1 className='!text-sm px-2 my-3 min-h-[50px] max-h-[100px] line-clamp-2  !font-bold'>
                                 <p dangerouslySetInnerHTML={{__html: ele.title.rendered}}></p>
                               </h1>
 
-                              <h1 className='text-right p-2 text-purple-600'>More <i className="fa-solid fa-arrow-right"></i></h1>
+                              <h1 className='text-right p-2 text-purple-600'><i className="fa-solid fa-arrow-circle-right text-xl text-yellow-500 font-extrabold"></i></h1>
                               </IonCard>
-                      </Link>
+                      </a>
                         </SwiperSlide>
                     ))
                   }
@@ -220,7 +219,7 @@ const handlePreviousPage = () => {
             <IonList>
               {
                 articles && !loading && articles?.slice(2).map((ele:any, index:any) =>(
-                  <Link to={`/article/${ele.id}`}>
+                  <a href={`https://kingdomlifestyleadmin.com.ng/${ele.id}`}>
                     <IonItem>
                         <div className='m-2 p-2 w-full dark:text-[white]'>
                           <div className='w-[100%] m-auto'>
@@ -228,17 +227,13 @@ const handlePreviousPage = () => {
                           </div>
                           {/* <p className="text-xs py-2 text-green-700 font-semibold">{ele.type}</p> */}
                           <h1 dangerouslySetInnerHTML={{__html: ele.title.rendered}} className='text-[#2d2a2a] my-2 font-extrabold text-lg dark:text-white'></h1>
-                          <p className='text-xs line-clamp-3' dangerouslySetInnerHTML={{ __html: ele.excerpt.rendered}}></p>
-                          <div className='flex text-xs font-bold justify-between items-center'>
-                            <p className='text-xs truncate py-2 dark:text-white'>by Admin</p>
-                            {/* <p className='text-green-700 text-xs'><i className="fa-regular fa-calendar-days"></i> {formatRelative(subDays(ele.date, 0), new Date())}</p> */}
-
-                          </div>
+                          <p className='text-sm font-redhat text-justify font-semibold text-[#636262] line-clamp-3' dangerouslySetInnerHTML={{ __html: ele.excerpt.rendered}}></p>
+             
                         </div>
 
 
                       </IonItem>
-                  </Link>
+                  </a>
                     ))
               }
 

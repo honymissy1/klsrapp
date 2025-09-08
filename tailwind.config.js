@@ -5,7 +5,13 @@ export default {
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        fancy: ['"Great Vibes"', 'Funnel Display'],
+        headline: ['Mozilla Headline'],
+        redhat: ["Red Hat Text", 'sans-serif']
+      }
+    },
   },
   plugins: [],
 }

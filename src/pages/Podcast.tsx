@@ -2,6 +2,10 @@ import React, { useEffect, useRef, useState } from 'react';
 import  XMLParser from 'react-xml-parser';
 import AudioPlayer from 'react-h5-audio-player';
 import 'react-h5-audio-player/lib/styles.css';
+import Amplitude, { Song } from "amplitudejs";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowCircleLeft, faArrowCircleRight, faBackwardStep, faClock, faForwardStep, faPauseCircle, faPlayCircle } from "@fortawesome/free-solid-svg-icons";
+
 
 import {
   IonPage,
@@ -20,20 +24,43 @@ import {
 
 
 import { RefresherEventDetail } from '@ionic/core';
-
-function stripHtmlTags(str:any) {
-  return str.replace(/<\/?[^>]+(>|$)/g, " ");
-}
-
+import Error from '../components/Error';
 
 const Podcast = () =>{
-
+  
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
+  const [play, setPlay] = useState(false);
+  const [loading, setLoading] = useState(true)
 
   const audioRef = useRef<any>(null);
   const [podcastData, setPodcastData] = useState<any>();
   let [currentPodcast, setCurrentPodcast] = useState(0);
+  const [songs, setSongs] = useState<any>([]);
+  const [status, setStatus] = useState({
+    loading: false,
+    loaded: false,
+    error: null,
+  });
+
+
+
+  // Refs
+  const targetRef = useRef<any>(null);
+  const playlistRef = useRef<any>(null);
+
+  //Pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 15;
+
+  // Calculate current items
+  const indexOfLast = currentPage * itemsPerPage;
+  const indexOfFirst = indexOfLast - itemsPerPage;
+  const currentItems = songs.slice(indexOfFirst, indexOfLast);
+
+  // Calculate total pages
+  const totalPages = Math.ceil(songs.length / itemsPerPage);
+
 
 const doRefresh = async (event: CustomEvent<RefresherEventDetail>) => {
   try {
@@ -49,35 +76,88 @@ const doRefresh = async (event: CustomEvent<RefresherEventDetail>) => {
   }
 };
 
-    useEffect(() =>{
-      const fetchPod = async () =>{
-        fetch(`https://anchor.fm/s/1d6ad87c/podcast/rss`)
-        .then(response => response.text())
-        .then(str => {          
-            const xml = new XMLParser().parseFromString(str);
-            setPodcastData(xml.getElementsByTagName('item'))
-           })       
-          }
-          
-          fetchPod();
-        },[])
-
-    const scrollToTop = (index:any) => {
-      setCurrentPodcast(index)
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+    const formatDate = (d:string) => {
+      const date = new Date(d);
+      const pad = (n: number) => n.toString().padStart(2, '0');
+      let hours = date.getHours();
+      const ampm = hours >= 12 ? 'pm' : 'am';
+      hours = hours % 12 || 12;
+      return `${pad(date.getDate())}-${pad(date.getMonth()+1)}-${pad(date.getFullYear() % 100)} ${pad(hours)}:${pad(date.getMinutes())}${ampm}`;
     };
-  
-    const clickNext = () =>{
-      setCurrentPodcast(currentPodcast+1)
-    }
 
-    const clickPrev = () =>{
-      if(currentPodcast > 0){
-        setCurrentPodcast(currentPodcast-1)   
-      }
-    }
+    useEffect(() => {
+      const fetchPod = async () => {
+        setStatus({ loading: true, loaded: false, error: null });
+    
+        try {
+          const response = await fetch(`https://anchor.fm/s/1d6ad87c/podcast/rss`);
+          const str = await response.text();
+    
+          const xml = new XMLParser().parseFromString(str);
+          setPodcastData(xml.getElementsByTagName("item"));
+    
+          xml.getElementsByTagName("item").forEach((ele: any) => {
+            setSongs((songs: any) => [
+              ...songs,
+              {
+                title: ele?.children[0]?.value?.replace(/>/g, ""),
+                url: ele?.children[6]?.attributes?.url,
+                date: formatDate(ele?.children[5]?.value),
+                cover_art_url: ele?.children[10]?.attributes?.href,
+                description: ele?.children[1]?.value?.replace(
+                  /(<\/?[^>]+(>|$))|(&quot;)|(>)/g,
+                  " "
+                ),
+              },
+            ]);
+          });
+    
+          setStatus({ loading: false, loaded: true, error: null });
+        } catch (err: any) {
+          console.error("Podcast fetch failed:", err);
+    
+          // Normalize error message
+          const message =
+            err?.message || "Something went wrong while fetching podcast";
+    
+          setStatus({ loading: false, loaded: false, error: message });
+        }
+      };
+    
+      fetchPod();
+    }, []);
+    
+
+        useEffect(() => {
+          if (songs.length > 0) {
+            Amplitude.init({
+              songs,
+              start_song: 0
+            });
+          }
+        }, [songs]); // 
 
 
+        const handleClick = () => {
+          if (targetRef.current) {
+            targetRef?.current?.scrollIntoView({ behavior: "smooth" });
+          }
+          setPlay(true);
+        };
+
+        const next = () =>{
+          setCurrentPage(p => Math.min(p + 1, totalPages))
+          if (playlistRef.current) {
+            playlistRef?.current?.scrollIntoView({ behavior: "smooth" });
+          }
+        }
+
+        const prev = () =>{
+          setCurrentPage(p => Math.max(p - 1, 1))
+          if (playlistRef.current) {
+            playlistRef?.current?.scrollIntoView({ behavior: "smooth" });
+          }
+        }
     return(
         <IonPage>
               <IonHeader>
@@ -98,128 +178,137 @@ const doRefresh = async (event: CustomEvent<RefresherEventDetail>) => {
             refreshingText="Refreshing..."
           />
         </IonRefresher>
-
-            <div className="min-h-[60vh]">
-
-              <div className="relative h-[70vh] mb-10 w-[100%] overflow-hidden" style={{backgroundImage: "url('/images/designs/img2.jpeg')", backgroundPosition:'center bottom', backgroundSize: 'cover' }}>
-                <div className="absolute flex items-end  text-white w-full h-full bg-[#0b0f14bf]">
-                   <div className="p-10">
-                        <h1 className="md:text-8xl text-4xl font-extrabold">KLSR PODCAST</h1>
-                   </div>
-
-                </div>
-              </div>
-
-              <div className="min-h-[300px] md:p-10 flex-wrap gap-10 flex">
- 
-                           {
-                
-                            <div className="flex-1 w-full  md:min-w-[500px]">
-                              <div className="" id="player">
-                              <div className="shadow md:p-3 !mx-auto shadow-slate-300 min-w-[300px] w-[80%] rounded" id="description">
-                                <div className="text-center">
-                                <img className="w-full" src="/images/designs/img3.jpeg" alt="" />
-
-                                </div>
-
-                                <AudioPlayer
-                                    onClickPrevious={clickPrev}
-                                    onClickNext={clickNext}
-                                    autoPlay={false}
-                                    showDownloadProgress
-                                    showSkipControls={false}
-                                    autoPlayAfterSrcChange={false}
-                                    src={podcastData && podcastData[currentPodcast]?.children.find((child:any) => child.name === 'enclosure').attributes.url}
-                                    onError={() => alert('Error playing podcast')}
-                                    style={{ 
-                                                                                fontSize: "100px"
-                                    }}
-                             />
-
-                                <a href={podcastData && podcastData[currentPodcast].children.find((child:any) => child.name === 'enclosure').attributes.url} download={podcastData && podcastData[currentPodcast].children.find((child:any) => child.name === 'title').value+'.mp3'} type="audio/mpeg">
-
-                                <div className="p-3 text-center rounded bg-green-600">
-                                  <h1 className="text-white font-bold"><i className="fa-solid fa-download mr-5"></i> Download podcast</h1>
-                                </div>
-                                </a>
-
-                              </div>
-                              </div>
-
-                              {
-                                podcastData && (
-                                  <div className="shadow !mx-auto my-4 shadow-slate-300 min-w-[300px] w-[80%] rounded" id="description">
-                                    <div className="p-5">
-                                      <h1 className="font-extrabold py-2 text-2xl">
-                                      {podcastData && podcastData[currentPodcast].children.find((child:any) => child.name === 'title').value.slice(0, -1)}</h1>
-                                      <p className="text-sm">{podcastData && stripHtmlTags(podcastData[currentPodcast].children.find((child:any) => child.name === 'description').value.slice(0, -1))}</p>
-                                      <hr />
-                                      <div className="flex flex-wrap justify-between items-center pt-2">
-                                          <h1 className="text-[#985be3] font-extrabold py-1"><i className="fa-solid fa-user-tie"></i> Olalekan Oloyede</h1>
-                                          <p className="bg-slate-300 text-sm p-1 rounded-xl">{podcastData && podcastData[currentPodcast].children.find((child:any) => child?.name == 'pubDate')?.value}</p>
-                                      </div>
-                                    </div>
-                                    
-                                  </div>
-
-                                )
-                              }
-                          
-                            </div>
-
-        
-              }
-
-              {
-              podcastData ? (
-               <div className="flex-1 h-[100vh] overflow-y-auto rounded max-[80%] min-w-[300px]" id="other-podcasts">
-                    <div className="p-5 sticky top-0 bg-[#083232] text-white"><h1>Other Podcast</h1></div>
-             
-                    <div className="py-3">
-
-                          <div>
-                            {podcastData?.map((item:any, index:any) => (
-                              <div onClick={() => scrollToTop(index)} className={`p-2 mb-5 items-center border-l-4 rounded border border-black  ${currentPodcast === index ? 'bg-gray-300' : ''}`} key={index}>
-                                <h2 className="p-2 font-extrabold">{item.children.find((child:any) => child.name === 'title').value.slice(0, -1)}</h2>
-                                <p className="p-2 font-bold text-xs">{item.children.find((child:any) => child?.name == 'pubDate')?.value}</p>
-
-                              </div>
-                            ))}
-                          </div>
-
-                                 </div>
-               </div>
-              ): (
-                 <div className="min-w-[300px] rounded-md text-center bg-teal-900 text-white h-max py-10 flex-1">
-                   <h1 className="font-extrabold text-2xl">Could not get podcasts</h1>
-                   <p className="text-red-100 text-xs mt-4 bg-red-800 w-max m-auto p-1 rounded-full">This could be due to:</p>
-     
-                   <ul className="list-disc  text-left w-max m-auto">
-                    <li>Network Connectivity issue</li>
-                    <li>Internal Server error</li>
+        <div className='p-2'>
 
       
-                   </ul>
 
-                   <p className='text-center'>Pull to refresh</p>
-                 </div>
-              )
-              }
+        <div className='mb-2 w-full rounded-2xl overflow-hidden bg-black max-h-max relative'>
+          <img className='w-[200%]' src="./images/podcast.jpg" alt="" />
+          <h3 className='p-3 font-headline text-center absolute bottom-0 text-white text-3xl font-bold'>Kingdom Lifestyle Podcast</h3> 
+        </div>
 
-
-
+        {
+          status.loading && (
+            <div className='w-full min-h-[400px] flex justify-center items-center'>
+              <div className='w-1/3'>
+                <img src="./images/loader.gif" alt="" />
+                <h4 className='text-center mt-2 text-blue-600'>Loading</h4>
               </div>
+            </div>
+          )
+         }
+          {
+          status.loaded && (
+            <div className="min-h-[60vh]">
+            <div ref={targetRef} className="amplitude-player rounded-2xl overflow-clip">
+            {/* Cover Art */}
+            <img className='rounded-2xl' data-amplitude-song-info="cover_art_url" alt="Album Art" />
+
+            <div className='bg-[#1f0d2a] text-white font-bold p-5 mt-2 rounded-2xl'>
+            <div className='flex gap-2'>
+              <span className="amplitude-current-time"></span> {" "}
+              <input type="range" className="amplitude-song-slider w-full" />
+              {/* Current & Duration Time */}
+              <span className="amplitude-duration-time"></span>
+            </div>
+
+            <div className='text-4xl justify-evenly flex mt-4'>
+
+              <button className="amplitude-prev"><FontAwesomeIcon icon={faBackwardStep} /></button>
+            
+              <button onClick={() => setPlay(!play)} className="amplitude-play-pause">
+                {
+                  play ? (<FontAwesomeIcon icon={faPauseCircle} />) : (<FontAwesomeIcon icon={faPlayCircle} />)
+                }
+                </button>
+              <button className="amplitude-next"><FontAwesomeIcon icon={faForwardStep} /></button>
 
             </div>
 
+            </div>
+
+            {/* Song Info */}
+            <div className='p-3'>
+              <div className='flex items-end justify-end p-1 text-[purple] gap-2'>
+              <FontAwesomeIcon icon={faClock} />
+              <span className='font-semibold text-xs' data-amplitude-song-info="date"></span><br/>
+              </div>
+              <span style={{fontFamily: "Funnel Display"}}  className='font-semibold text-2xl' data-amplitude-song-info="title"></span>
+              <div style={{fontFamily: "Funnel Display", marginTop: '10px'}}  className='text-sm text-[#5c5454] font-semibold' data-amplitude-song-info="description"></div>
+            </div>
+
+            {/* Controls */}
+
+            {/* Progress Bar */}
+
+          </div>
+
+          <div ref={playlistRef} className="playlist p-2">
+              {currentItems.map((song:any, index:number) => (
+                <div
+                  onClick={handleClick}
+                  key={index}
+                  className="song amplitude-play border p-3"
+                  data-amplitude-song-index={index+""}
+
+                >
+                  <strong className='text-sm font-fancy'>{song.title}</strong>
+                  <p className='line-clamp-3 font-semibold text-[#928a8a] text-xs'>{song.description}</p>
+
+                </div>
+              ))}
+            </div>
+
+            <div className='flex justify-between p-2'>
+              {/* Previous button */}
+              <button
+                className='bg-yellow-600 text-white font-semibold p-2 text-sm rounded'
+                onClick={() => prev()}
+                disabled={currentPage === 1}
+              >
+              <FontAwesomeIcon icon={faArrowCircleLeft} />
+              Prev
+              </button>
+              {/* Page numbers */}
+            
+            
+                <button>
+                  <p>Page {currentPage}</p> 
+                </button>
+          
+                
+              
+              {/* Next button */}
+              <button
+                className='bg-yellow-600 text-sm text-white font-semibold p-2 rounded'
+                onClick={next}
+                disabled={currentPage === totalPages}
+              >
+                Next
+                <FontAwesomeIcon icon={faArrowCircleRight} />
+                
+              </button>
+            </div>
+          
+
+            </div>
+
+          )
+        }
+
+        {
+          status.error && (
+            <Error />
+          )
+
+        }
+
+
+
+            </div>
 
       </IonContent>
-      <IonToast
-        isOpen={showToast}
-        message={toastMessage}
-        duration={2000}
-        onDidDismiss={() => setShowToast(false)}
-      />
+
         </IonPage>
     )
 }

@@ -25,7 +25,6 @@ import '@ionic/react/css/display.css';
 import { playCircle, radio, newspaper, library, search } from 'ionicons/icons';
 import Radio from './assets/images/radio.png'
 import Article from './assets/images/article.png'
-import Post from './pages/Post';
 /**
  * Ionic Dark Mode
  * -----------------------------------------------------
@@ -68,10 +67,6 @@ const App: React.FC = () => {
             <Programs />
           </Route>
 
-          <Route exact path="/article/:id">
-            <Post />
-          </Route>
-
           <Route path="/articles" render={() => <BlogPage />} exact={true} />
           <Route path="/more" render={() => <More />} exact={true} />
           <Route path="/podcast" render={() => <Podcast />} exact={true} />
@@ -84,8 +79,8 @@ const App: React.FC = () => {
 
         </IonRouterOutlet>
 
-        <IonTabBar style={{borderRadius: '0px', padding:'10px 5px', width: '100%', margin: '0px auto'}} slot="bottom">
-        
+        <IonTabBar className='p-2' style={{ width: '100%' }} slot="bottom">
+
           <IonTabButton tab="podcast" href="/podcast"  onClick={() => setSelectedTab('podcast')}>
             {/* <IonIcon icon={newspaper} /> */}
             <div className='w-[30px]'>
@@ -108,7 +103,7 @@ const App: React.FC = () => {
              <img className={selectedTab === 'more' ? 'selected' : ''} src="/favicon.png" alt="" />
             </div>
 
-            <IonLabel>More</IonLabel>
+            <IonLabel>Menu</IonLabel>
           </IonTabButton>
 
 
