@@ -1,7 +1,7 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'com.kingdomlifestyle',
+  appId: 'com.kingdomlifestyleradio',
   appName: 'KLSR',
   webDir: 'dist'
 };

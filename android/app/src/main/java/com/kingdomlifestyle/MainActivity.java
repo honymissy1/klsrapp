@@ -1,4 +1,4 @@
-package com.kingdomlifestyle;
+package com.kingdomlifestyleradio;
 
 import com.getcapacitor.BridgeActivity;
 

@@ -11,7 +11,7 @@
 
         <activity
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|smallestScreenSize|screenLayout|uiMode"
-            android:name="com.kingdomlifestyle.MainActivity"
+            android:name="com.kingdomlifestyleradio.MainActivity"
             android:label="@string/title_activity_main"
             android:theme="@style/AppTheme.NoActionBarLaunch"
             android:launchMode="singleTask"
@@ -26,7 +26,7 @@
 
         <provider
             android:name="androidx.core.content.FileProvider"
-            android:authorities="com.kingdomlifestyle.fileprovider"
+            android:authorities="com.kingdomlifestyleradio.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
